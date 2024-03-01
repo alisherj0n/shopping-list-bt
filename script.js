@@ -2,8 +2,9 @@ const itemForm = document.querySelector('#item-form');
 const itemInput = document.querySelector('#item-input');
 const itemList = document.querySelector('#item-list');
 const clearBtn = document.querySelector('#clear');
+const itemFilter = document.querySelector('#filter');
 
-function addItem(e) {
+const addItem = e => {
   e.preventDefault();
 
   const newItem = itemInput.value;
@@ -21,51 +22,62 @@ function addItem(e) {
   const button = createButton('remove-item btn-link text-red');
   li.appendChild(button);
 
+  // Add li to the DOM
   itemList.appendChild(li);
 
-  itemInput.value = '';
-}
+  checkUI();
 
-function createButton(classes) {
+  itemInput.value = '';
+};
+
+const createButton = classes => {
   const button = document.createElement('button');
   button.className = classes;
   const icon = createIcon('fa-solid fa-xmark');
   button.appendChild(icon);
   return button;
-}
+};
 
-function createIcon(classes) {
+const createIcon = classes => {
   const icon = document.createElement('i');
   icon.className = classes;
   return icon;
-}
-
-// function removeItem(e) {
-//   if (e.target.parentElement.classList.contains('remove-item')) {
-//     if (confirm('Are you sure?') {
-//     e.target.parentElement.parentElement.remove();
-//     }
-
-//   }
-// }
+};
 
 const removeItem = e => {
   if (e.target.parentElement.classList.contains('remove-item')) {
     if (confirm('Are you sure ?')) {
       e.target.parentElement.parentElement.remove();
+
+      checkUI();
     }
   }
 };
 
-function clearItems() {
+const clearItems = () => {
   // itemList.innerHTML = ''; // Simple way of clearing all dom elements
 
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
-}
+
+  checkUI();
+};
+
+const checkUI = () => {
+  const items = itemList.querySelectorAll('li');
+  if (items.length === 0) {
+    clearBtn.style.display = 'none';
+    itemFilter.style.display = 'none';
+  } else {
+    clearBtn.style.display = 'block';
+    itemFilter.style.display = 'block';
+  }
+};
 
 // Event Listeners
 itemForm.addEventListener('submit', addItem);
 itemList.addEventListener('click', removeItem);
 clearBtn.addEventListener('click', clearItems);
+
+checkUI();
